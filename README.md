@@ -4,7 +4,7 @@ Lua script to generate a table showing your LD results over time
 Examples:
 ![Screenshot](screenshot.png)
 
-Verbose output:
+Verbose output (no gaps between the lines when in your LD profile):
 ```
 Note that the rating percentage is only a rough guess.
 ┌───────────┬───────────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┐
