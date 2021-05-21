@@ -19,7 +19,7 @@ Note that the rating percentage is only a rough guess.
 ```
 
 # Usage:
-* git clone --recursive <this repository>
+* `git clone --recursive <this repository>`
 * Install luarocks and lua
 * Run `luarocks install http` and `luarocks install lua-json`
 * Run `lua ./ld-results.lua <game name>, <game2 name>, ...`
