@@ -1,7 +1,10 @@
 # Ludum Dare Game Results History Generator
 Lua script to generate a table showing your LD results over time
 
-Example:
+Examples:
+![Screenshot](screenshot.png)
+
+Verbose output:
 ```
 Note that the rating percentage is only a rough guess.
 ┌───────────┬───────────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┐
@@ -14,9 +17,8 @@ Note that the rating percentage is only a rough guess.
 │ 48, compo │    Backwards Quest    │  742/1079 - 31% │  721/1079 - 33% │  440/1079 - 59% │  782/1079 - 27% │  760/1079 - 29% │  441/1079 - 59% │  228/1079 - 79% │  596/1079 - 45% │
 └───────────┴───────────────────────┴─────────────────┴─────────────────┴─────────────────┴─────────────────┴─────────────────┴─────────────────┴─────────────────┴─────────────────┘
 ```
-(Made with https://github.com/LoneWolfHT/ld-results-history)
 
-Usage:
+# Usage:
 * git clone --recursive <this repository>
 * Install luarocks and lua
 * Run `luarocks install http` and `luarocks install lua-json`
