@@ -1,0 +1,6 @@
+[submodule "lib/table_gen"]
+	path = lib/table_gen
+	url = git@github.com:sapphyrus/table_gen.lua.git
+[submodule "lib/ansicolors"]
+	path = lib/ansicolors
+	url = git@github.com:kikito/ansicolors.lua.git
