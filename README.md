@@ -5,6 +5,7 @@ Examples:
 ![Screenshot](screenshot.png)
 
 Verbose output:
+
 (The gaps disappear when in your LD profile):
 ```
 Note that the rating percentage is only a rough guess.
