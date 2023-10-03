@@ -1,7 +1,21 @@
 local table_gen = require("lib/table_gen/table_gen")
-local http_request = require("http.request")
-local json = require("json")
-local colorize = require("lib/ansicolors/ansicolors")
+local http      = require("socket.http")
+local json      = require("json")
+local colorize  = require("lib/ansicolors/ansicolors")
+
+local table_styles = table_gen.styles
+do
+	table_styles["ASCII"] = nil
+
+	local tmp = {}
+	for k in pairs(table_styles) do
+		local t = k:gsub("%s", "")
+		table.insert(tmp, t)
+		tmp[t] = k
+	end
+
+	table_styles = tmp
+end
 
 local headings
 local rows = {}
@@ -13,6 +27,7 @@ local NO_RANKING = "N/A"
 
 local settings = {
 	verbose = false,
+	style = nil,
 }
 local largest_rating = 0
 local best_rating = {}
@@ -23,6 +38,7 @@ local function print_help()
 		"\tlua ./ld-results.lua --verbose 48/backwards-quest 47/pis-great-escape-1\n\n" ..
 		"Avaliable options:\n" ..
 		"\t--verbose (-v): Print extra ranking info\n" ..
+		"\t--style (-s): Print table in a different style:\n\t\t"..table.concat(table_styles, " | ").."\n" ..
 		"\t<game link>: Game to add to the output table. You can copy this from your game url. Example: `48/backwards-quest`"
 	)
 end
@@ -36,7 +52,13 @@ for idx, cmd in ipairs(arg) do
 	if cmd == "-v" or cmd == "--verbose" then
 		settings.verbose = true
 	elseif cmd == "-s" or cmd == "--style" then
-		settings.style = arg[idx+1]
+		if table_styles[arg[idx+1]] then
+			settings.style = table_styles[arg[idx+1]]
+			table.remove(arg, idx+1)
+		else
+			print_help()
+			return
+		end
 	elseif cmd:match("^-") then
 		print_help()
 		return
@@ -60,17 +82,17 @@ headings = {
 RATINGS.stop = #headings
 
 local function get_page(url)
-	local headers, stream = http_request.new_from_uri(url):go(15)
+	-- print(url)
 
-	if not headers then
-		print("This seems to be taking too long, retrying...")
+	local result, code = http.request(url)
+
+	if not result or code ~= 200 then
+		print("HTTP Error", code)
+		print("Retrying...\n\n")
 		return get_page(url)
 	end
 
-	local result = assert(stream:get_body_as_string())
-	if headers:get(":status") ~= "200" then
-		error(result)
-	end
+	-- print(result)
 
 	return json.decode(result)
 end
@@ -127,7 +149,10 @@ local function populate_row(num, gamepath)
 		local total_submitted_in_cat = ld_info.stats[game_info.node[1].subsubtype]
 		local total_games = ld_info.stats.game - ld_info.stats.unfinished
 		local extra = 1.0 + (total_submitted_in_cat/total_games)
-		local estimated_percent_games_rated = (ld_info.stats["grade-20-plus"] / total_games) * (game_info.node[1].subsubtype == "compo" and extra or 1)
+		local estimated_percent_games_rated =
+			(ld_info.stats["grade-20-plus"] / total_games)
+			*
+			(game_info.node[1].subsubtype == "compo" and extra or 1)
 
 		local total_rated_games = total_submitted_in_cat * (estimated_percent_games_rated)
 
@@ -184,14 +209,16 @@ print("Generating table...")
 for _, data in pairs(best_rating) do
 	if data.val then
 		if settings.verbose then
-			rows[data.row][data.idx] = rows[data.row][data.idx]:gsub("(/[ %d]- %- )%d-%%", "%1"..fit_x_to_y_with_extra(data.idx, data.val))
+			rows[data.row][data.idx] = rows[data.row][data.idx]:gsub(
+				"(/[ %d]- %- )%d-%%", "%1"..fit_x_to_y_with_extra(data.idx, data.val)
+			)
 		else
 			rows[data.row][data.idx] = rows[data.row][data.idx]:gsub("%d-%%", fit_x_to_y_with_extra(data.idx, data.val))
 		end
 	end
 end
 
-local table_out = table_gen(rows, headings, {style = "Unicode (Single Line)", value_justify = "center"})
+local table_out = table_gen(rows, headings, {style = settings.style, value_justify = "center"})
 
 print("DONE!\n")
 
