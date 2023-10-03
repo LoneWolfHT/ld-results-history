@@ -4,7 +4,8 @@ Lua script to generate a table showing your LD results over time
 Examples:
 ![Screenshot](screenshot.png)
 
-Verbose output (no gaps between the lines when in your LD profile):
+Verbose output:
+(The gaps disappear when in your LD profile):
 ```
 Note that the rating percentage is only a rough guess.
 ┌───────────┬───────────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┬─────────────────┐
@@ -21,5 +22,5 @@ Note that the rating percentage is only a rough guess.
 # Usage:
 * `git clone --recursive <this repository>`
 * Install luarocks and lua
-* Run `luarocks install http` and `luarocks install lua-json`
+* Run `luarocks install luasocket` and `luarocks install lua-json`
 * Run `lua ./ld-results.lua <game name>, <game2 name>, ...`
